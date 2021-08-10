@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"portal/portal"
+
+	"github.com/speedrunsh/portal-api/go/service"
 
 	"github.com/coreos/go-systemd/v22/dbus"
 	"google.golang.org/grpc"
@@ -14,30 +15,30 @@ import (
 const addr = "0.0.0.0:1337"
 
 type server struct {
-	portal.UnimplementedPortalServer
+	service.UnimplementedPortalServer
 }
 
 // SayHello implements helloworld.GreeterServer
-func (s *server) Echo(ctx context.Context, in *portal.Empty) (*portal.Empty, error) {
+func (s *server) Echo(ctx context.Context, in *service.Empty) (*service.Empty, error) {
 	log.Printf("Received ping")
-	return &portal.Empty{}, nil
+	return &service.Empty{}, nil
 }
 
-func (s *server) ServiceRestart(ctx context.Context, in *portal.Service) (*portal.Response, error) {
+func (s *server) ServiceRestart(ctx context.Context, in *service.Service) (*service.Response, error) {
 	conn, err := dbus.NewWithContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	responseChan := make(chan string, 1)
-	service := fmt.Sprintf("%s.service", in.GetName())
-	_, err = conn.RestartUnitContext(ctx, service, "replace", responseChan)
+	serviceName := fmt.Sprintf("%s.service", in.GetName())
+	_, err = conn.RestartUnitContext(ctx, serviceName, "replace", responseChan)
 	if err != nil {
 		return nil, err
 	}
 
 	res := <-responseChan
-	return &portal.Response{Content: res}, nil
+	return &service.Response{Content: res}, nil
 
 }
 
@@ -51,7 +52,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	portal.RegisterPortalServer(s, &server{})
+	service.RegisterPortalServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
