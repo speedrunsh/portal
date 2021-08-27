@@ -15,7 +15,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/speedrunsh/portal-api/go v0.0.0-20210810210607-b0e8fb7079b1
 	golang.org/x/text v0.3.6 // indirect
-	google.golang.org/genproto v0.0.0-20210816143620-e15ff196659d // indirect
+	google.golang.org/genproto v0.0.0-20210825212027-de86158e7fda // indirect
 )
 
 require github.com/google/go-cmp v0.5.6 // indirect
