@@ -5,15 +5,14 @@ import (
 	"log"
 	"net"
 
-	"github.com/speedrunsh/portal-api/go/service"
-
+	"github.com/speedrunsh/portal/command"
 	"google.golang.org/grpc"
 )
 
 const addr = "0.0.0.0:1337"
 
 type server struct {
-	service.UnimplementedPortalServer
+	command.UnimplementedPortalServer
 }
 
 // func (s *server) Echo(ctx context.Context, in *service.Empty) (*service.Empty, error) {
@@ -39,9 +38,9 @@ type server struct {
 
 // }
 
-func (s *server) RunCommand(ctx context.Context, in *service.Empty) (*service.Empty, error) {
-	log.Printf("Received ping")
-	return &service.Empty{}, nil
+func (s *server) RunCommand(ctx context.Context, in *command.Command) (*command.Response, error) {
+	log.Printf("Received command")
+	return &command.Response{Content: "command done"}, nil
 }
 
 func main() {
@@ -51,7 +50,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	service.RegisterPortalServer(s, &server{})
+	command.RegisterPortalServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
