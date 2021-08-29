@@ -1,3 +1,7 @@
+GITCOMMIT=$(shell git rev-parse --short HEAD 2>/dev/null)
+DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+VERSION=$(shell git branch --show-current)
+
 all: requirements linux darwin
 
 clean:
