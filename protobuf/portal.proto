@@ -11,6 +11,6 @@ message Response{
 }
 
 service Portal{
-  rpc Service(Request) returns (Response) {}
+  rpc ServiceRestart(Request) returns (Response) {}
   rpc RunCommand(Request) returns (Response) {}
 }

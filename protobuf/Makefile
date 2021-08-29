@@ -1,11 +1,11 @@
-.PHONY: requirements command
+.PHONY: requirements portal
 
-all: requirements command
+all: requirements portal
 
 requirements:
 	@go mod download
 	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
-command:
+portal:
 	protoc --go_out=paths=source_relative:.. --go-grpc_out=paths=source_relative:.. *.proto
