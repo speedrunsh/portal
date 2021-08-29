@@ -5,14 +5,14 @@ import (
 	"log"
 	"net"
 
-	"github.com/speedrunsh/portal/command"
+	"github.com/speedrunsh/portal"
 	"google.golang.org/grpc"
 )
 
 const addr = "0.0.0.0:1337"
 
 type server struct {
-	command.UnimplementedPortalServer
+	portal.UnimplementedPortalServer
 }
 
 // func (s *server) Echo(ctx context.Context, in *service.Empty) (*service.Empty, error) {
@@ -38,9 +38,9 @@ type server struct {
 
 // }
 
-func (s *server) RunCommand(ctx context.Context, in *command.Command) (*command.Response, error) {
-	log.Printf("Received command")
-	return &command.Response{Content: "command done"}, nil
+func (s *server) RunCommand(ctx context.Context, in *portal.Request) (*portal.Response, error) {
+	log.Printf("Received command:%s", in.GetName())
+	return &portal.Response{Content: "ran " + in.GetName()}, nil
 }
 
 func main() {
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	command.RegisterPortalServer(s, &server{})
+	portal.RegisterPortalServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

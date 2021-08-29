@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = "github.com/speedrunsh/portal";
+package portal;
+
+message Request{
+  string name = 1;
+}
+
+message Response{
+  string content = 1;
+}
+
+service Portal{
+  rpc Service(Request) returns (Response) {}
+  rpc RunCommand(Request) returns (Response) {}
+}
