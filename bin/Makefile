@@ -12,7 +12,7 @@ linux-arm64:
 linux: linux-amd64 linux-arm64
 
 darwin-amd64:
-	GOOS=darwin GOARCH=arm64 go build -o ../dist/darwin/amd64/portal
+	GOOS=darwin GOARCH=amd64 go build -o ../dist/darwin/amd64/portal
 
 darwin-arm64:
 	GOOS=darwin GOARCH=arm64 go build -o ../dist/darwin/arm64/portal
