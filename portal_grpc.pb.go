@@ -18,8 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PortalClient interface {
-	ServiceRestart(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	RunCommand(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	ServiceRestart(ctx context.Context, in *Service, opts ...grpc.CallOption) (*Response, error)
+	RunCommand(ctx context.Context, in *Command, opts ...grpc.CallOption) (*Response, error)
 }
 
 type portalClient struct {
@@ -30,7 +30,7 @@ func NewPortalClient(cc grpc.ClientConnInterface) PortalClient {
 	return &portalClient{cc}
 }
 
-func (c *portalClient) ServiceRestart(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *portalClient) ServiceRestart(ctx context.Context, in *Service, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/portal.Portal/ServiceRestart", in, out, opts...)
 	if err != nil {
@@ -39,7 +39,7 @@ func (c *portalClient) ServiceRestart(ctx context.Context, in *Request, opts ...
 	return out, nil
 }
 
-func (c *portalClient) RunCommand(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *portalClient) RunCommand(ctx context.Context, in *Command, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/portal.Portal/RunCommand", in, out, opts...)
 	if err != nil {
@@ -52,8 +52,8 @@ func (c *portalClient) RunCommand(ctx context.Context, in *Request, opts ...grpc
 // All implementations must embed UnimplementedPortalServer
 // for forward compatibility
 type PortalServer interface {
-	ServiceRestart(context.Context, *Request) (*Response, error)
-	RunCommand(context.Context, *Request) (*Response, error)
+	ServiceRestart(context.Context, *Service) (*Response, error)
+	RunCommand(context.Context, *Command) (*Response, error)
 	mustEmbedUnimplementedPortalServer()
 }
 
@@ -61,10 +61,10 @@ type PortalServer interface {
 type UnimplementedPortalServer struct {
 }
 
-func (UnimplementedPortalServer) ServiceRestart(context.Context, *Request) (*Response, error) {
+func (UnimplementedPortalServer) ServiceRestart(context.Context, *Service) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServiceRestart not implemented")
 }
-func (UnimplementedPortalServer) RunCommand(context.Context, *Request) (*Response, error) {
+func (UnimplementedPortalServer) RunCommand(context.Context, *Command) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunCommand not implemented")
 }
 func (UnimplementedPortalServer) mustEmbedUnimplementedPortalServer() {}
@@ -81,7 +81,7 @@ func RegisterPortalServer(s grpc.ServiceRegistrar, srv PortalServer) {
 }
 
 func _Portal_ServiceRestart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(Service)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -93,13 +93,13 @@ func _Portal_ServiceRestart_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/portal.Portal/ServiceRestart",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PortalServer).ServiceRestart(ctx, req.(*Request))
+		return srv.(PortalServer).ServiceRestart(ctx, req.(*Service))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Portal_RunCommand_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(Command)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func _Portal_RunCommand_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/portal.Portal/RunCommand",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PortalServer).RunCommand(ctx, req.(*Request))
+		return srv.(PortalServer).RunCommand(ctx, req.(*Command))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -9,7 +9,10 @@ require (
 	google.golang.org/protobuf v1.27.1
 )
 
-require golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
+require (
+	github.com/godbus/dbus/v5 v5.0.4 // indirect
+	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
+)
 
 require (
 	cloud.google.com/go v0.93.3 // indirect
@@ -19,6 +22,7 @@ require (
 	github.com/apex/log v1.9.0 // indirect
 	github.com/cheekybits/genny v1.0.0 // indirect
 	github.com/cheggaaa/pb/v3 v3.0.8 // indirect
+	github.com/coreos/go-systemd/v22 v22.3.2
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
