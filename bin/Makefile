@@ -1,7 +1,7 @@
 all: requirements linux darwin
 
 clean:
-	rm -rf dist
+	rm -rf ../dist
 
 requirements:
 	@go get
