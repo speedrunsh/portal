@@ -1,6 +1,4 @@
-.PHONY: requirements all
-
-all: requirements all
+all: requirements all-targets
 
 requirements:
 	@go get
@@ -17,4 +15,4 @@ darwin-amd64:
 darwin-arm64:
 	GOOS=darwin GOARCH=arm64 go build -o dist/darwin/arm64/portal
 
-all: linux-amd64 linux-arm64 darwin-amd64 darwin-arm64
+all-targets: linux-amd64 linux-arm64 darwin-amd64 darwin-arm64
