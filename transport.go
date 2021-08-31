@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/melbahja/goph"
 	qnet "github.com/speedrunsh/grpc-quic"
 
 	"github.com/speedrunsh/speedrun/key"
@@ -16,13 +17,12 @@ import (
 type Transport struct {
 	Conn    *grpc.ClientConn
 	Address string
-	Key     key.Key
 	opts    options
 }
 
 type options struct {
-	insecure  bool
-	useTunnel bool
+	insecure bool
+	key      *key.Key
 }
 
 type TransportOption interface {
@@ -31,8 +31,7 @@ type TransportOption interface {
 
 func defaultOptions() options {
 	return options{
-		insecure:  false,
-		useTunnel: true,
+		insecure: false,
 	}
 }
 
@@ -46,30 +45,40 @@ func WithInsecure(enable bool) TransportOption {
 	return withInsecure(enable)
 }
 
-type withTunnel bool
+type withSSH key.Key
 
-func (w withTunnel) apply(o *options) {
-	o.useTunnel = bool(w)
+func (w withSSH) apply(o *options) {
+	a := key.Key(w)
+	o.key = &a
 }
 
-func WithTunnel(enable bool) TransportOption {
-	return withTunnel(enable)
+func WithSSH(key key.Key) TransportOption {
+	return withSSH(key)
 }
 
-func NewTransport(address string, key key.Key, opts ...TransportOption) (*Transport, error) {
+func NewTransport(address string, opts ...TransportOption) (*Transport, error) {
 	t := &Transport{
 		Address: address,
-		Key:     key,
 		opts:    defaultOptions(),
 	}
 	for _, opt := range opts {
 		opt.apply(&t.opts)
 	}
 
-	if t.opts.useTunnel {
-		sshclient, err := ssh.Connect(address, &key)
-		if err != nil {
-			return nil, err
+	if t.opts.key != nil {
+		var sshclient *goph.Client
+		var err error
+
+		if t.opts.insecure {
+			sshclient, err = ssh.ConnectInsecure(address, t.opts.key)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			sshclient, err = ssh.Connect(address, t.opts.key)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		dialer := func(ctx context.Context, addr string) (net.Conn, error) {
@@ -81,33 +90,8 @@ func NewTransport(address string, key key.Key, opts ...TransportOption) (*Transp
 			return nil, err
 		}
 	}
+
 	return t, nil
-}
-
-func SSHTransport(address string, key *key.Key) (*grpc.ClientConn, error) {
-	sshclient, err := ssh.Connect(address, key)
-	if err != nil {
-		return nil, err
-	}
-
-	dialer := func(ctx context.Context, addr string) (net.Conn, error) {
-		return sshclient.Dial("tcp", "127.0.0.1:1337")
-	}
-
-	return grpc.Dial("127.0.0.1:1337", grpc.WithInsecure(), grpc.WithContextDialer(dialer))
-}
-
-func SSHTransportInsecure(address string, key *key.Key) (*grpc.ClientConn, error) {
-	sshclient, err := ssh.ConnectInsecure(address, key)
-	if err != nil {
-		return nil, err
-	}
-
-	dialer := func(ctx context.Context, addr string) (net.Conn, error) {
-		return sshclient.Dial("tcp", "127.0.0.1:1337")
-	}
-
-	return grpc.Dial("127.0.0.1:1337", grpc.WithInsecure(), grpc.WithContextDialer(dialer))
 }
 
 func HTTP2Transport(address string) (*grpc.ClientConn, error) {
