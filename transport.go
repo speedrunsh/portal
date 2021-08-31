@@ -57,6 +57,8 @@ func WithSSH(key key.Key) TransportOption {
 }
 
 func NewTransport(address string, opts ...TransportOption) (*Transport, error) {
+	var err error
+
 	t := &Transport{
 		Address: address,
 		opts:    defaultOptions(),
@@ -67,7 +69,6 @@ func NewTransport(address string, opts ...TransportOption) (*Transport, error) {
 
 	if t.opts.key != nil {
 		var sshclient *goph.Client
-		var err error
 
 		if t.opts.insecure {
 			sshclient, err = ssh.ConnectInsecure(address, t.opts.key)
@@ -86,6 +87,12 @@ func NewTransport(address string, opts ...TransportOption) (*Transport, error) {
 		}
 
 		t.Conn, err = grpc.Dial("127.0.0.1:1337", grpc.WithInsecure(), grpc.WithContextDialer(dialer))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		target := fmt.Sprintf("%s:%d", address, 1337)
+		t.Conn, err = grpc.Dial(target, grpc.WithInsecure())
 		if err != nil {
 			return nil, err
 		}
