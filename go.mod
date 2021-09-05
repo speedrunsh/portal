@@ -15,7 +15,7 @@ require (
 )
 
 require (
-	cloud.google.com/go v0.94.0 // indirect
+	cloud.google.com/go v0.94.1 // indirect
 	cloud.google.com/go/oslogin v0.1.0 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/alitto/pond v1.5.1 // indirect
@@ -41,7 +41,7 @@ require (
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/melbahja/goph v1.2.1 // indirect
+	github.com/melbahja/goph v1.2.1
 	github.com/mikesmitty/edkey v0.0.0-20170222072505-3356ea4e686a // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
@@ -66,10 +66,10 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	golang.org/x/tools v0.1.5 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/api v0.55.0 // indirect
+	google.golang.org/api v0.56.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20210831024726-fe130286e0e2 // indirect
-	gopkg.in/ini.v1 v1.62.0 // indirect
+	google.golang.org/genproto v0.0.0-20210903162649-d08c68adba83 // indirect
+	gopkg.in/ini.v1 v1.62.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
