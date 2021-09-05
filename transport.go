@@ -56,7 +56,7 @@ func WithSSH(key key.Key) TransportOption {
 	return withSSH(key)
 }
 
-func NewTransport(address string, opts ...TransportOption) (*Transport, error) {
+func NewTransport(address string, opts ...TransportOption) (*grpc.ClientConn, error) {
 	var err error
 
 	t := &Transport{
@@ -98,7 +98,7 @@ func NewTransport(address string, opts ...TransportOption) (*Transport, error) {
 		}
 	}
 
-	return t, nil
+	return t.Conn, nil
 }
 
 func HTTP2Transport(address string) (*grpc.ClientConn, error) {
