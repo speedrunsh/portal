@@ -16,5 +16,7 @@ message Response{
 
 service Portal{
   rpc ServiceRestart(Service) returns (Response) {}
+  rpc ServiceStatus(Service) returns (Response) {}
   rpc RunCommand(Command) returns (Response) {}
+  // rpc EnsureMountedDisk()
 }

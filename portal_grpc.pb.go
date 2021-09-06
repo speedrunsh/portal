@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PortalClient interface {
 	ServiceRestart(ctx context.Context, in *Service, opts ...grpc.CallOption) (*Response, error)
+	ServiceStatus(ctx context.Context, in *Service, opts ...grpc.CallOption) (*Response, error)
 	RunCommand(ctx context.Context, in *Command, opts ...grpc.CallOption) (*Response, error)
 }
 
@@ -39,6 +40,15 @@ func (c *portalClient) ServiceRestart(ctx context.Context, in *Service, opts ...
 	return out, nil
 }
 
+func (c *portalClient) ServiceStatus(ctx context.Context, in *Service, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/portal.Portal/ServiceStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *portalClient) RunCommand(ctx context.Context, in *Command, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/portal.Portal/RunCommand", in, out, opts...)
@@ -53,6 +63,7 @@ func (c *portalClient) RunCommand(ctx context.Context, in *Command, opts ...grpc
 // for forward compatibility
 type PortalServer interface {
 	ServiceRestart(context.Context, *Service) (*Response, error)
+	ServiceStatus(context.Context, *Service) (*Response, error)
 	RunCommand(context.Context, *Command) (*Response, error)
 	mustEmbedUnimplementedPortalServer()
 }
@@ -63,6 +74,9 @@ type UnimplementedPortalServer struct {
 
 func (UnimplementedPortalServer) ServiceRestart(context.Context, *Service) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServiceRestart not implemented")
+}
+func (UnimplementedPortalServer) ServiceStatus(context.Context, *Service) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceStatus not implemented")
 }
 func (UnimplementedPortalServer) RunCommand(context.Context, *Command) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunCommand not implemented")
@@ -98,6 +112,24 @@ func _Portal_ServiceRestart_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Portal_ServiceStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Service)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PortalServer).ServiceStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/portal.Portal/ServiceStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PortalServer).ServiceStatus(ctx, req.(*Service))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Portal_RunCommand_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Command)
 	if err := dec(in); err != nil {
@@ -126,6 +158,10 @@ var Portal_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ServiceRestart",
 			Handler:    _Portal_ServiceRestart_Handler,
+		},
+		{
+			MethodName: "ServiceStatus",
+			Handler:    _Portal_ServiceStatus_Handler,
 		},
 		{
 			MethodName: "RunCommand",
