@@ -14,11 +14,6 @@ type server struct {
 	portal.UnimplementedPortalServer
 }
 
-// func (s *server) Echo(ctx context.Context, in *portal.Empty) (*portal.Empty, error) {
-// 	log.Printf("Received ping")
-// 	return &portal.Empty{}, nil
-// }
-
 func main() {
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
