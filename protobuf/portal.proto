@@ -18,6 +18,7 @@ service Portal{
   rpc ServiceRestart(Service) returns (Response) {}
   rpc ServiceStart(Service) returns (Response) {}
   rpc ServiceStop(Service) returns (Response) {}
+  rpc ServiceStatus(Service) returns (Response) {}
   rpc RunCommand(Command) returns (Response) {}
   // rpc EnsureMountedDisk()
 }

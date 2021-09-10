@@ -61,3 +61,19 @@ func (s *server) ServiceStart(ctx context.Context, in *portal.Service) (*portal.
 	return &portal.Response{Content: res}, nil
 
 }
+
+func (s *server) ServiceStatus(ctx context.Context, in *portal.Service) (*portal.Response, error) {
+	conn, err := dbus.NewWithContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	serviceName := fmt.Sprintf("%s.service", in.GetName())
+	res, err := conn.ListUnitsByNamesContext(ctx, []string{serviceName})
+	if err != nil {
+		return nil, err
+	}
+
+	return &portal.Response{Content: res[0].ActiveState}, nil
+
+}
