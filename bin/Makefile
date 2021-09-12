@@ -5,7 +5,7 @@ DIST=../dist
 LINUX_PATH=$(DIST)/linux
 DARWIN_PATH=$(DIST)/darwin
 
-all: requirements linux darwin
+all: requirements linux
 
 clean:
 	rm -rf $(DIST)
@@ -32,5 +32,3 @@ darwin-arm64: requirements
 	zip $(DIST)/portal-darwin-arm64.zip $(DARWIN_PATH)/arm64/portal
 
 darwin: requirements darwin-amd64 darwin-arm64
-
-all-targets: requirements linux darwin
